@@ -1,0 +1,44 @@
+language: node_js
+node_js: node
+
+cache:
+  directories:
+    - node_modules
+
+install: npm install
+
+before_script:
+  - npm install -g gulp
+
+addons:
+  browserstack:
+    username: "ivannginx1"
+    access_key:
+      secure: "NutOhdgtUdBUXMPZhy8X1F1Jq+tan1LeNOV0FArBt15SNlxtNArqhiyTi4XnG9MPruX4306aGF2RBrKso+OiGNRdGtRGngH613Q0GWNtlC/boMqnI7fHqLIyCs6S12y2uA8PK4Ifxg9bZ0VtCTYYbMy+p1KvBM//L12vmtfdnby8z5Qvex3tB3dLoPOR50CKkINHJVDLm+iVRFrdz4/83oDsulZSRRGIaxu5taDWPIcp3fYZtre2Nc+RXcsyFDyjN7U0Hvr5tKBbloJxXEQEBv2xLkMOtp85nmCPD06s1Il8Wus1ux3raVsfUyaW5FpNX37Jeb5e00RQUM1wgU5m75H6qiGwDvQswbugJG0i/a2nNfsgVmbrSZdMnkHcx2Uxmrw4ejyEP5NSrJSBi05Ck1fQ4UsZ4Qkdf1fd04SI0LpLWt43eoNO/7rHKsQoP4LCX9gxKUuC075NEBLODyJ529RYfA6dKKwwH6o0ZbOgASmCoAWaM65g4+FHRnJcKL/Kj9ZWklQtRa7/ynlHaA65jefFS2lB8Ut6d3rXDDBih9mIrwV1uUaEH96xgAN42bgU/vY6FGzNkDOYZqj4YfsepDM0wbOsslFie7JZq7iFjsYvrXqLvYUMk37AZwQ2Sb6uH4tIT4Qw/4oZfDzA1En3/8HdZJ28nKW/lzjwMSqheIY="
+
+
+branches:
+  only:
+    - gh-pages 
+
+before_install:
+  - cnpm install -g hexo-cli
+
+# Start: Build Lifecycle
+install:
+  - yarn
+  - yarn add hexo-deployer-git
+
+# 执行清缓存，生成网页操作
+script:
+  - hexo clean
+  - hexo generate
+
+# 设置git提交名，邮箱；替换真实token到_config.yml文件，最后depoy部署
+after_script:
+  - git config user.name "WhiteAce"
+  - git config user.email "whiteace@yeah.net"
+  # 替换同目录下的_config.yml文件中gh_token字符串为travis后台刚才配置的变量，注意此处sed命令用了双引号。单引号无效！
+  - sed -i "s/gh_token/${GH_TOKEN}/g" ./_config.yml
+  - hexo deploy
+# End: Build LifeCycle
