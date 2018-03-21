@@ -3,7 +3,7 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: 阿策's blog
+title: 阿策's Blog
 subtitle:
 description:
 author: White Ace
@@ -54,7 +54,7 @@ index_generator:
   
 # Category & Tag
 default_category: uncategorized
-category_map:
+category_map: 
 tag_map:
 
 # Date / Time format

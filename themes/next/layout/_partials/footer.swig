@@ -23,15 +23,15 @@
 
 {% if theme.footer.powered %}
   <div class="powered-by">{#
-  #}{{ __('footer.powered', '<a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a>') }}{#
+  #}{{ __('footer.powered', '<a class="theme-link" target="_blank" href="/about">Ace</a>') }}{#
 #}</div>
 {% endif %}
 
-{% if theme.footer.powered and theme.footer.theme.enable %}
+{% if theme.footer.powered and theme.footer.theme.enable and footer.theme %}
   <span class="post-meta-divider">|</span>
 {% endif %}
 
-{% if theme.footer.theme.enable %}
+{% if theme.footer.theme.enable and footer.theme %}
   <div class="theme-info">{#
   #}{{ __('footer.theme') }} &mdash; {#
   #}<a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">{#
