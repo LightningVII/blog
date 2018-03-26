@@ -5,22 +5,13 @@ cache:
   directories:
     - node_modules
 
+before_install:
+  - npm install -g hexo-cli
+
 install: npm install
 
 before_script:
   - npm install -g gulp
-
-branches:
-  only:
-    - gh-pages 
-
-before_install:
-  - npm install -g hexo-cli
-
-# Start: Build Lifecycle
-install:
-  - yarn
-  - yarn add hexo-deployer-git
 
 # 执行清缓存，生成网页操作
 script:
@@ -34,4 +25,7 @@ after_script:
   - sed -i "s/gh_token/${GH_TOKEN}/g" ./_config.yml
   - cat ./_config.yml
   - hexo deploy
-# End: Build LifeCycle
+
+branches:
+  only:
+    - gh-pages 
