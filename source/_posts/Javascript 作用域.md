@@ -10,10 +10,10 @@ tags:
 #### 1
 ``` javascript
 Function.prototype.bind = function (context) {
-    var self = this;
-    return function () {
-        self.apply(context);
-    }
+	var self = this;
+	return function () {
+		self.apply(context);
+	}
 }
 ```
 #### 2
@@ -21,7 +21,7 @@ Function.prototype.bind = function (context) {
 Function.prototype.bind = Function.prototype.bind || function(context) {
 	var that = this;
 	return function() {
-	return that.apply(context, arguments);
+		return that.apply(context, arguments);
 	}
 }
 ```
