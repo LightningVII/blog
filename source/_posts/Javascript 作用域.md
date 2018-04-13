@@ -1,5 +1,5 @@
 ---
-title: Javascript 作用域 
+title: Javascript 作用域引发的一系列思考
 date: 2018.04.12
 categories: 
     - Javascript
@@ -7,8 +7,107 @@ tags:
     - Javascript
     - 菜鸟系列
 ---
-
 ##### apply & call & 闭包 & 块级作用域
+-----------------------------
+``` javascript
+var nodeList = document.querySelectorAll('ul li')
+var colorList = ['red', 'green', 'orange']
+```
+
+> freshman  
+> colorList.slice(1) --> ['green', 'orange']  
+> colorList.slice(-2) --> ['green', 'orange']  
+> colorList.slice(1, 2) --> ['green']  
+> colorList.splice(2, 1) --> ["orange"]; colorList --> ['red', 'green']  
+> Array.isArray(colorList) --> true  
+> Array.isArray(nodeList) --> false  
+> var arr = Array.from(nodeList); Array.isArray(arr) --> true  
+> var arr = [...nodeList]; Array.isArray(arr) --> true  
+> var arr = Array.prototype.slice.call(nodeList); Array.isArray(arr) --> true  
+> nodeList.slice(1) --> Uncaught TypeError: nodeList.slice is not a function  
+> Array.prototype.slice.call(nodeList, 1) --> [li, li]  
+
+``` javascript
+nodeList[0].addEventListener('click', function (e) {
+  e.target.style.color = colorList[0]
+})
+nodeList[1].addEventListener('click', function (e) {
+  e.target.style.color = colorList[1]
+})
+nodeList[2].addEventListener('click', function (e) {
+  e.target.style.color = colorList[2]
+})
+```
+
+> sophomore  
+> i --> 3  
+> colorList[i] --> undefined  
+
+``` javascript
+for (var i = 0; i < nodeList.length; i++) {
+  nodeList[i].addEventListener('click', function (e) {
+    e.target.style.color = colorList[i]
+  })
+}
+```
+
+> junior
+> 闭包 
+
+``` javascript
+var handleEvent = function (color) {
+  return function (e) {
+    e.target.style.color = color
+  }
+}
+nodeList[0].addEventListener('click', handleEvent(colorList[0]))
+nodeList[1].addEventListener('click', handleEvent(colorList[1]))
+nodeList[2].addEventListener('click', handleEvent(colorList[2]))
+```
+
+> senior
+> console.log(this) --> ```<li>红灯</li>```  
+> console.log(this) --> ```<li>绿灯</li>```  
+> console.log(this) --> ```<li>黄灯</li>```
+
+``` javascript
+var handleEvent = function (color) {
+  return function (e) {
+    e.target.style.color = color
+    console.log(this)
+  }
+}
+
+for (var i = 0; i < nodeList.length; i++) {
+  nodeList[i].addEventListener('click', handleEvent(colorList[i]))
+}
+```
+
+> ES6 let const 块作用域 箭头函数  
+> console.log(this) --> Window  
+> colorList[i] --> 'red'  
+> colorList[i] --> 'green'  
+> colorList[i] --> 'orange'
+> const len = nodeList.length 小细节
+
+``` javascript
+const len = nodeList.length
+for (let i = 0; i < len; i++) {
+  nodeList[i].addEventListener('click', e => {
+    console.log(this)
+    e.target.style.color = colorList[i]
+  })
+}
+```
+
+``` javascript
+const handleEvent = color => e => e.target.style.color = color
+const iterator = nodeList.entries();
+
+for (let [i, node] of iterator) {
+  node.addEventListener('click', handleEvent(colorList[i]))
+}
+```
 
 ``` javascript
 Function.prototype.bind = function (context) {
