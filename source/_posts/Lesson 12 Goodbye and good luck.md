@@ -1,5 +1,6 @@
 ---
 title: Lesson 12 Goodbye and good luck
+date: 2018.03.31
 categories: 
     - English
 tags:
