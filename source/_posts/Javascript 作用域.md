@@ -8,7 +8,7 @@ tags:
     - 菜鸟系列
 ---
 #### 1
-```
+``` javascript
 Function.prototype.bind = function (context) {
     var self = this;
     return function () {
