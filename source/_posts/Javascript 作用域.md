@@ -8,19 +8,23 @@ tags:
     - 菜鸟系列
 ---
 #### 1
-    Function.prototype.bind = function (context) {
-        var self = this;
-        return function () {
-            self.apply(context);
-        }
+```
+Function.prototype.bind = function (context) {
+    var self = this;
+    return function () {
+        self.apply(context);
     }
+}
+```
 #### 2
-	Function.prototype.bind = Function.prototype.bind || function(context) {
-	  var that = this;
-	  return function() {
-	    return that.apply(context, arguments);
-	  }
+```
+Function.prototype.bind = Function.prototype.bind || function(context) {
+	var that = this;
+	return function() {
+	return that.apply(context, arguments);
 	}
+}
+```
 #### 3
     Function.prototype.bind = function (context) {
         var self = this;
