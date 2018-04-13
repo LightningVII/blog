@@ -1,5 +1,12 @@
-## 在使用 Vue 和 React 两大流行框架时的部分对比总结
-
+---
+title: 在使用 Vue 和 React 两大流行框架时的部分对比总结
+date: 2016.04.12
+categories: 
+    - Javascript
+tags:
+    - Javascript
+    - 菜鸟系列
+---
 ### 木偶组件
   - 作用: 类似传统的模版引擎(Handlebars, underscore: _template)
   - React 中使用灵活的 jsx 语法实现

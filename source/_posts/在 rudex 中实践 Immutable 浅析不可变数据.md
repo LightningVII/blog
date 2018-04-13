@@ -1,3 +1,12 @@
+---
+title: Immutable 感悟
+date: 2016.04.12
+categories: 
+    - Javascript
+tags:
+    - Javascript
+    - 菜鸟系列
+---
 ### javascript 引用类型
   指向对象的指针而不是对象本身，赋值的时候，只是创建了一个新的指针指向对象。保存在堆内存中。
   优点:省内存

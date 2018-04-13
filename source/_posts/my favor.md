@@ -1,5 +1,5 @@
 ---
-title: Javascript 作用域 
+title: 个人收藏
 date: 2018.04.12
 categories: 
     - Javascript
@@ -7,7 +7,7 @@ tags:
     - Javascript
     - 菜鸟系列
 ---
-- <img src='https://simpleicons.org/icons/airbnb.svg' height=15 />: [JavaScript Style Guide](https://github.com/airbnb/javascript)
+- [JavaScript Style Guide](https://github.com/airbnb/javascript)
 
 - [前端算法代码收集库](https://github.com/cllgeek/g_algorithm)
 
