@@ -100,6 +100,8 @@ for (let i = 0; i < len; i++) {
 }
 ```
 
+> ES6 for of array.entries()
+
 ``` javascript
 const handleEvent = color => e => e.target.style.color = color
 const iterator = nodeList.entries();
@@ -108,7 +110,7 @@ for (let [i, node] of iterator) {
   node.addEventListener('click', handleEvent(colorList[i]))
 }
 ```
-
+-------------------------
 ``` javascript
 Function.prototype.bind = function (context) {
   var that = this;
