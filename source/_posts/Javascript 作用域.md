@@ -17,7 +17,7 @@ Function.prototype.bind = function (context) {
 }
 ```
 #### 2
-```
+``` javascript
 Function.prototype.bind = Function.prototype.bind || function(context) {
 	var that = this;
 	return function() {
@@ -26,24 +26,28 @@ Function.prototype.bind = Function.prototype.bind || function(context) {
 }
 ```
 #### 3
-    Function.prototype.bind = function (context) {
-        var self = this;
-        var args = Array.prototype.slice.call(arguments, 1);
+``` javascript
+Function.prototype.bind = function (context) {
+	var self = this;
+	var args = Array.prototype.slice.call(arguments, 1);
 
-        return function () {
-            var bindArgs = Array.prototype.slice.call(arguments);
-            self.apply(context, args.concat(bindArgs));
-        }
-    }
-#### 4
-	Function.prototype.bind = function (context) {
-	    var self = this;
-	    var args = Array.prototype.slice.call(arguments, 1);
-	
-	    var fbound = function () {
-	        var bindArgs = Array.prototype.slice.call(arguments);
-	        self.apply(this instanceof self ? this : context, args.concat(bindArgs));
-	    }
-	    fbound.prototype = this.prototype;
-	    return fbound;
+	return function () {
+		var bindArgs = Array.prototype.slice.call(arguments);
+		self.apply(context, args.concat(bindArgs));
 	}
+}
+```
+#### 4
+``` javascript
+Function.prototype.bind = function (context) {
+	var self = this;
+	var args = Array.prototype.slice.call(arguments, 1);
+
+	var fbound = function () {
+		var bindArgs = Array.prototype.slice.call(arguments);
+		self.apply(this instanceof self ? this : context, args.concat(bindArgs));
+	}
+	fbound.prototype = this.prototype;
+	return fbound;
+}
+```
