@@ -292,7 +292,7 @@ font:
   # Global font settings used on <body> element.
   global:
     external: true
-    family: Lato
+    family: Nunito
     size:
 
   # Font settings for Headlines (h1, h2, h3, h4, h5, h6).
@@ -306,7 +306,7 @@ font:
   # Fallback to `global` font settings.
   posts:
     external: true
-    family:
+    family: Nunito
 
   # Font settings for Logo.
   # Fallback to `global` font settings.
