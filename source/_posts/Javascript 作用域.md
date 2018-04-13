@@ -1,27 +1,27 @@
 ---
-title: bind 
-date: 2018.04.12
+title: Javascript 作用域 
+date: 2018.03.20
 categories: 
     - Javascript
 tags:
-    - 代码片段
+    - Javascript
+    - 菜鸟系列
 ---
-
-#### 
+#### 1
     Function.prototype.bind = function (context) {
         var self = this;
         return function () {
             self.apply(context);
         }
     }
-####
+#### 2
 	Function.prototype.bind = Function.prototype.bind || function(context) {
 	  var that = this;
 	  return function() {
 	    return that.apply(context, arguments);
 	  }
 	}
-####
+#### 3
     Function.prototype.bind = function (context) {
         var self = this;
         var args = Array.prototype.slice.call(arguments, 1);
@@ -31,7 +31,7 @@ tags:
             self.apply(context, args.concat(bindArgs));
         }
     }
-####
+#### 4
 	Function.prototype.bind = function (context) {
 	    var self = this;
 	    var args = Array.prototype.slice.call(arguments, 1);
