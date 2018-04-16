@@ -80,9 +80,9 @@ nodeList[2].addEventListener('click', handleEvent(colorList[2]))
 ```
 
 > senior  
-> console.log(this) --> ```<li>红灯</li>```  
-> console.log(this) --> ```<li>绿灯</li>```  
-> console.log(this) --> ```<li>黄灯</li>```
+> console.log(this) --> `<li>红灯</li>`  
+> console.log(this) --> `<li>绿灯</li>`  
+> console.log(this) --> `<li>黄灯</li>` 
 
 ``` javascript
 var handleEvent = function (color) {
