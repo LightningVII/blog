@@ -5,11 +5,10 @@ categories:
     - Javascript
 tags:
     - Javascript
-    - 菜鸟系列
+    - 小白系列
 ---
 ##### apply & call & 闭包 & 块级作用域
 -----------------------------
-
 #### 题目：点亮三盏灯
 
 ```html
