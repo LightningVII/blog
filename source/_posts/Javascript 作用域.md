@@ -9,9 +9,18 @@ tags:
 ---
 ##### apply & call & 闭包 & 块级作用域
 -----------------------------
-``` javascript
-var nodeList = document.querySelectorAll('ul li')
-var colorList = ['red', 'green', 'orange']
+
+#### 题目：点亮三盏灯
+
+```html
+<body>
+  <h3>点亮三盏灯</h3>
+  <ul>
+    <li>红灯</li>
+    <li>绿灯</li>
+    <li>黄灯</li>
+  </ul>
+</body>
 ```
 
 > freshman  
@@ -26,6 +35,11 @@ var colorList = ['red', 'green', 'orange']
 > var arr = Array.prototype.slice.call(nodeList); Array.isArray(arr) --> true  
 > nodeList.slice(1) --> Uncaught TypeError: nodeList.slice is not a function  
 > Array.prototype.slice.call(nodeList, 1) --> [li, li]  
+
+``` javascript
+var nodeList = document.querySelectorAll('ul li')
+var colorList = ['red', 'green', 'orange']
+```
 
 ``` javascript
 nodeList[0].addEventListener('click', function (e) {
