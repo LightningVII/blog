@@ -86,4 +86,4 @@ deploy:
 algolia:
   applicationID: 'OO5QDTG2M6'
   apiKey: '756ecb4702418a68be1ea2cbd76527f7'
-  indexName: 'blog-chinese'
+  indexName: 'blog'
