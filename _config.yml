@@ -13,7 +13,7 @@ avatar: /uploads/avatar.png
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: https://lightningvii.github.io
+url: http://prodigies.top
 root: /
 permalink: :year/:month/:day/:title/
 permalink_defaults:
@@ -82,8 +82,3 @@ deploy:
   # repo: https://github.com/LightningVII/lightningvii.github.io.git
   repo: https://gh_token@github.com/LightningVII/lightningvii.github.io.git
   branch: master
-
-algolia:
-  applicationID: 'OO5QDTG2M6'
-  apiKey: '756ecb4702418a68be1ea2cbd76527f7'
-  indexName: 'blog'
