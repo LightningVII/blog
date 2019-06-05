@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Javascript,菜鸟系列,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="javascript 引用类型  指向对象的指针而不是对象本身，赋值的时候，只是创建了一个新的指针指向对象。保存在堆内存中。  优点:省内存 为什么要实践 “不可变数据”  在复杂的业务场景下，由于对象是被引用的，导致数据变的“不可预见”，如何理解数据 “可预见”，个人的理解是对数据变化的监控度，由于多处引用，造成数据难以还原，甚至有需求是还原到某一次操作后的数据，这时候数据的变化难以追溯，也就是">
+<meta name="keywords" content="Javascript,菜鸟系列">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Immutable 感悟">
+<meta property="og:url" content="https://lightningvii.github.io/2016/04/12/在 rudex 中实践 Immutable 浅析不可变数据/index.html">
+<meta property="og:site_name" content="阿策&#39;s Blog">
+<meta property="og:description" content="javascript 引用类型  指向对象的指针而不是对象本身，赋值的时候，只是创建了一个新的指针指向对象。保存在堆内存中。  优点:省内存 为什么要实践 “不可变数据”  在复杂的业务场景下，由于对象是被引用的，导致数据变的“不可预见”，如何理解数据 “可预见”，个人的理解是对数据变化的监控度，由于多处引用，造成数据难以还原，甚至有需求是还原到某一次操作后的数据，这时候数据的变化难以追溯，也就是">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-06-05T17:47:25.949Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Immutable 感悟">
+<meta name="twitter:description" content="javascript 引用类型  指向对象的指针而不是对象本身，赋值的时候，只是创建了一个新的指针指向对象。保存在堆内存中。  优点:省内存 为什么要实践 “不可变数据”  在复杂的业务场景下，由于对象是被引用的，导致数据变的“不可预见”，如何理解数据 “可预见”，个人的理解是对数据变化的监控度，由于多处引用，造成数据难以还原，甚至有需求是还原到某一次操作后的数据，这时候数据的变化难以追溯，也就是">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://lightningvii.github.io/2016/04/12/在 rudex 中实践 Immutable 浅析不可变数据/">
+
+
+
+
+
+  <title>Immutable 感悟 | 阿策's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">阿策's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">保持狼性，勿忘初心</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://lightningvii.github.io/2016/04/12/在 rudex 中实践 Immutable 浅析不可变数据/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="White Ace">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="阿策's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Immutable 感悟</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-04-12T00:00:00+00:00">
+                2016-04-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Javascript/" itemprop="url" rel="index">
+                    <span itemprop="name">Javascript</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="javascript-引用类型"><a href="#javascript-引用类型" class="headerlink" title="javascript 引用类型"></a>javascript 引用类型</h3><p>  指向对象的指针而不是对象本身，赋值的时候，只是创建了一个新的指针指向对象。保存在堆内存中。<br>  优点:省内存</p>
+<h3 id="为什么要实践-“不可变数据”"><a href="#为什么要实践-“不可变数据”" class="headerlink" title="为什么要实践 “不可变数据”"></a>为什么要实践 “不可变数据”</h3><p>  在复杂的业务场景下，由于对象是被引用的，导致数据变的“不可预见”，如何理解数据 “可预见”，个人的理解是对数据变化的监控度，由于多处引用，造成数据难以还原，甚至有需求是还原到某一次操作后的数据，这时候数据的变化难以追溯，也就是我理解的 “不可预见”</p>
+<h3 id="为什么使用Immutable"><a href="#为什么使用Immutable" class="headerlink" title="为什么使用Immutable"></a>为什么使用Immutable</h3><h6 id="由于引用类型的优点，如果都使用深拷贝的方式创建对象，无疑会增大内存的开销。"><a href="#由于引用类型的优点，如果都使用深拷贝的方式创建对象，无疑会增大内存的开销。" class="headerlink" title="由于引用类型的优点，如果都使用深拷贝的方式创建对象，无疑会增大内存的开销。"></a>由于引用类型的优点，如果都使用深拷贝的方式创建对象，无疑会增大内存的开销。</h6><ul>
+<li>Immutable 三大特性<ul>
+<li>Persistent data structure （持久化数据结构）</li>
+<li>structural sharing （结构共享）</li>
+<li>support lazy operation （惰性操作）</li>
+</ul>
+</li>
+<li><p>个人理解</p>
+<p>比如 原始数据 </p>
+<pre><code>var person = { name: &quot;阿策&quot;, age: 25 }
+</code></pre><p>变化的目标数据是 </p>
+<pre><code>{ name: &quot;阿策&quot;, age: 25, parent: { father: &quot;Gang&quot;, mother: &quot;Ying&quot; } }
+</code></pre><p>那么 Immutable 会存一个 </p>
+<pre><code>var personParent = {parent: { father: &quot;Gang&quot;, mother: &quot;Ying&quot; } }
+</code></pre><p>返回的结果</p>
+<pre><code>_.merge(person, personParent)
+</code></pre></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Javascript/" rel="tag"># Javascript</a>
+          
+            <a href="/tags/菜鸟系列/" rel="tag"># 菜鸟系列</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/04/12/如何优雅地在React中处理事件响应/" rel="next" title="React 积累">
+                <i class="fa fa-chevron-left"></i> React 积累
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/04/12/mongodb/" rel="prev" title="MongoDB 笔记">
+                MongoDB 笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.png" alt="White Ace">
+            
+              <p class="site-author-name" itemprop="name">White Ace</p>
+              <p class="site-description motion-element" itemprop="description">本人所有文章均坚持“去名词化”原则，因为对于像我这样优秀的学渣来说，一堆不明觉厉的名词实在是难以理解</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/LightningVII" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="whiteace@yeah.net" target="_blank" title="E-Mail">
+                    
+                      <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#javascript-引用类型"><span class="nav-number">1.</span> <span class="nav-text">javascript 引用类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么要实践-“不可变数据”"><span class="nav-number">2.</span> <span class="nav-text">为什么要实践 “不可变数据”</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么使用Immutable"><span class="nav-number">3.</span> <span class="nav-text">为什么使用Immutable</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#由于引用类型的优点，如果都使用深拷贝的方式创建对象，无疑会增大内存的开销。"><span class="nav-number">3.0.0.1.</span> <span class="nav-text">由于引用类型的优点，如果都使用深拷贝的方式创建对象，无疑会增大内存的开销。</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">White Ace</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="/about">Ace</a></div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
